@@ -1,4 +1,4 @@
-# Multichannel ROI Segmenter
+# MultiChannel Coloc Toolkit
 
 An ImageJ/Fiji macro for region-based, multichannel image segmentation, particle analysis, and channel-mask merging.
 
@@ -74,4 +74,3 @@ output_directory/
 
 ## License
 
-MIT (or your preferred license)

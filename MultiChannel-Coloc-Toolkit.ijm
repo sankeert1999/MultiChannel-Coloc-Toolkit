@@ -122,10 +122,9 @@ macro "Multichannel ROI Analysis" {
 // Shows the setup dialog and returns all user-provided values
 // ============================================================
 function getUserInputs() {
-    inputPath = File.openDialog("Select the input image file");
-    outputDir = getDirectory("Select the output directory");
-
-    Dialog.create("Channel Configuration");
+    Dialog.create("Multichannel ROI Analysis - Setup");
+    Dialog.addString("Input image file path:", "", 50);
+    Dialog.addString("Output directory path:", "", 50);
     Dialog.addString("Channel 1 name:", "Channel1");
     Dialog.addString("Channel 2 name:", "Channel2");
     Dialog.addString("Channel 3 name:", "Channel3");
@@ -134,12 +133,19 @@ function getUserInputs() {
     Dialog.addNumber("Minimum particle size (pixels^2):", 20);
     Dialog.show();
 
+    inputPath = Dialog.getString();
+    outputDir = Dialog.getString();
     ch1 = Dialog.getString();
     ch2 = Dialog.getString();
     ch3 = Dialog.getString();
     ch4 = Dialog.getString();
     dapiCh = Dialog.getChoice();
     minSize = Dialog.getNumber();
+
+    // Ensure output directory ends with a separator
+    if (!endsWith(outputDir, File.separator)) {
+        outputDir = outputDir + File.separator;
+    }
 
     return newArray(inputPath, outputDir, ch1, ch2, ch3, ch4, dapiCh, toString(minSize));
 }
@@ -320,12 +326,12 @@ function processChannelInRegion(regionNum, regionDir, chNum, chLabel, minSize, l
     }
 
     // ---- Save particle CSV (Area, X, Y) ----
-    nResults = nResults();
-    if (nResults > 0) {
+    numParticles = nResults();
+    if (numParticles > 0) {
         saveAs("Results", regionDir + chLabel + "_particles.csv");
     }
 
-    logMessage(logPath, "Region " + regionNum + " - Channel '" + chLabel + "': " + nResults + " particles detected.");
+    logMessage(logPath, "Region " + regionNum + " - Channel '" + chLabel + "': " + numParticles + " particles detected.");
 
     // ---- Clear ROI manager of particle ROIs and results table for next channel ----
     // Remove all entries except the original region ROIs (indices 0..regionCount-1
